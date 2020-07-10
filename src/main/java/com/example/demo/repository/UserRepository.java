@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Modifying
 	@Transactional
-	@Query(value = "UPDATE User u set u.time_token = :time_token WHERE u.username = :username", nativeQuery= true )
+	@Query(value = "UPDATE user u set u.time_token = :time_token WHERE u.username = :username", nativeQuery= true )
 	int updateTimeTokenByUsername(@Param("username") String username, @Param("time_token") Date timeToken);
 	
-	@Query(value= "SELECT r.role FROM Role r INNER JOIN UserRole ur on r.id = ur.id WHERE ur.user_id = :id", nativeQuery = true)
+	@Query(value= "SELECT r.role FROM role r INNER JOIN user_role ur on r.id = ur.id WHERE ur.user_id = :id", nativeQuery = true)
 	List<String> getRoleById(@Param("id") int id);
 }

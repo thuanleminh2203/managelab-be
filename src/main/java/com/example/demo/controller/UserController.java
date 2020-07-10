@@ -12,7 +12,6 @@ import com.example.demo.dto.UserDTO;
 import com.example.demo.service.JwtUserDetailsService;
 import com.example.utils.ConstUtils;
 import com.example.utils.ResponseData;
-import com.example.utils.ResponseErr;
 
 @RestController
 @CrossOrigin
@@ -22,14 +21,14 @@ public class UserController {
 	private JwtUserDetailsService jwtUserDetailsService;
 	
 	@PostMapping("/register")
-	public ResponseEntity register(@RequestBody UserDTO user){
-		ResponseEntity responseEntity;
+	public ResponseEntity<?> register(@RequestBody UserDTO user){
+		ResponseEntity<?> responseEntity;
 		try {
 			jwtUserDetailsService.save(user);
-			responseEntity = new ResponseEntity(new ResponseData(null, ConstUtils.SUSSCESS, user), HttpStatus.OK);
+			responseEntity = new ResponseEntity<>(new ResponseData(null, ConstUtils.SUSSCESS, user), HttpStatus.OK);
 		
 		} catch (Exception e) {
-			responseEntity =  new ResponseEntity( new ResponseData(null,e.getMessage(),null), HttpStatus.BAD_REQUEST);
+			responseEntity =  new ResponseEntity<>( new ResponseData(null,e.getMessage(),null), HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;
 	}
