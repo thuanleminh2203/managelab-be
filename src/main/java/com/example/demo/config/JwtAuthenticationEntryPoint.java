@@ -17,8 +17,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException {
-
-		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+//		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+		String expired = (String) request.getAttribute("expried");
+		System.out.println("=====ppp===" + expired);
+		if (expired!=null){
+			request.removeAttribute("expired");
+			response.addHeader("err", "E401");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"JWT Token has expired");
+        }else{
+        	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Invalid Login details");
+        }
 	}
 
 
