@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -76,14 +77,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+	
+	@Bean
+	public WebClient getWebclient() {
+		return WebClient.create(); 
+	}
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable();
 		// dont authenticate this particular request
-		httpSecurity.authorizeRequests().antMatchers("/authenticate/**", "/register","/secured/**").permitAll();
-		httpSecurity.authorizeRequests().antMatchers("/hello/**").access("hasRole('ROLE_ADMIN')");
+		httpSecurity.authorizeRequests().antMatchers("/authenticate/**", "/register","/secured/**", "/hello","/find-all").permitAll();
+//		httpSecurity.authorizeRequests().antMatchers("/hello/**").access("hasRole('ROLE_ADMIN')");
 		httpSecurity.authorizeRequests().anyRequest().authenticated();
 		httpSecurity.cors()
         .configurationSource(corsConfigurationSource());

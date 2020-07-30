@@ -60,10 +60,11 @@ public class EmailServicerImpl implements EmailService {
 			helper.setSubject(mail.getSubject());
 			helper.setText(mail.getContent());
 			helper.setFrom(mail.getMyEmail());
-			String uploadRootPath = request.getServletContext().getRealPath("upload");
-			System.out.println("uploadRootPath=" + uploadRootPath);
-
-			File uploadRootDir = new File(uploadRootPath);
+//			String uploadRootPath = request.getServletContext().getRealPath("upload");
+//			System.out.println("uploadRootPath=" + uploadRootPath);
+			String path = System.getProperty("user.dir");
+//			System.out.println("======" + path + "/upload" );
+			File uploadRootDir = new File(path + "/upload");
 			// Tạo thư mục gốc upload nếu nó không tồn tại.
 			if (!uploadRootDir.exists()) {
 				uploadRootDir.mkdirs();

@@ -40,7 +40,7 @@ public class UserController {
 	public ResponseEntity<?> register(@RequestBody UserDTO user) {
 		ResponseEntity<?> responseEntity;
 		try {
-			jwtUserDetailsService.save(user);
+//			jwtUserDetailsService.save(user);
 			responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, user));
 
 		} catch (Exception e) {

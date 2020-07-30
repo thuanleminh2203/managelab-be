@@ -1,6 +1,12 @@
 package com.example.utils;
 
-public class ResponseData {
+import java.io.Serializable;
+
+public class ResponseData implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3636348665814673848L;
 	private String errCode;
 	private String mess;
 	private Object data;

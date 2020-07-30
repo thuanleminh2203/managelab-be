@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmailDTO;
 import com.example.demo.service.EmailService;
@@ -41,11 +35,4 @@ public class EmailController {
 		return responseEntity;
 	}
 
-	@PostMapping("sendMail1")
-	@ResponseBody
-	public String handleFileUpload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-		System.out.println("message" + "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-		return "message" + "You successfully uploaded " + file.getOriginalFilename() + "!";
-	}
 }
