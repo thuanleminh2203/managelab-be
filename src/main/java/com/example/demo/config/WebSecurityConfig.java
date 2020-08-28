@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,6 +23,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableWebSecurity
@@ -55,51 +59,64 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
-	    return new WebMvcConfigurer() {
-	        @Override
-	        public void addCorsMappings(CorsRegistry registry) {
-	            registry.addMapping("/**").allowedOrigins("http://localhost:3000");
-	        }
-	    };
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("*");
+			}
+		};
 	}
-	
+
 	@Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-	
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+		configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
 	@Bean
 	public WebClient getWebclient() {
-		return WebClient.create(); 
+		return WebClient.create();
 	}
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
+//		httpSecurity.csrf().disable().cors().configurationSource(corsConfigurationSource());
 		httpSecurity.csrf().disable();
 		// dont authenticate this particular request
-		httpSecurity.authorizeRequests().antMatchers("/authenticate/**", "/register","/secured/**", "/hello","/find-all").permitAll();
+		httpSecurity.authorizeRequests()
+				.antMatchers("/authenticate/**", "/register", "/secured/chat", "/chat/**", "/find-all").permitAll()
+				.anyRequest().authenticated()
+				.and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling()
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint);
 //		httpSecurity.authorizeRequests().antMatchers("/hello/**").access("hasRole('ROLE_ADMIN')");
-		httpSecurity.authorizeRequests().anyRequest().authenticated();
-		httpSecurity.cors()
-        .configurationSource(corsConfigurationSource());
-		httpSecurity.authorizeRequests().and().
+//		httpSecurity.authorizeRequests().anyRequest().authenticated();
+//		httpSecurity.authorizeRequests().and(). 
 		// make sure we use stateless session; session won't be used to
 		// store user's state.
-				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Add a filter to validate the tokens with every request
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Bean
+	public Jackson2JsonObjectMapper jackson2JsonObjectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+		return new Jackson2JsonObjectMapper(mapper);
 	}
 }

@@ -30,7 +30,7 @@ public class SocketController {
 	public void sendSpecific(@DestinationVariable String username, MessageModel model )
 			throws Exception {
 		System.out.println("====usernaem==="+username);
-		simpMessagingTemplate.convertAndSend("/topic/" + username, model);
+		simpMessagingTemplate.convertAndSend("/topic/thuanlm", model);
 	}
 
 }

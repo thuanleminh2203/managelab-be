@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.UserDetails;
+import com.example.demo.dto.UserDetailDTO;
 import com.example.demo.repository.UserDetailRepository;
 import com.example.demo.service.UserService;
 
@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDetailRepository repository;
 
-	public List<UserDetails> findAll() {
-		return repository.findAll();
+	public List<UserDetailDTO> findAll() {
+		return repository.getAll();
 	}
 }

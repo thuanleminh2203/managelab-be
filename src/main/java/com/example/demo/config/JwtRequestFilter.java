@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,19 +23,39 @@ import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-
+	private final List<String> allowedOrigins = Arrays.asList("http://localhost:3000");
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		final String requestTokenHeader = request.getHeader("Authorization");
+//		if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+////			HttpServletRequest rq = (HttpServletRequest) request;
+//			HttpServletResponse res = (HttpServletResponse) response;
+//
+//			// Access-Control-Allow-Origin
+//			String origin = request.getHeader("Origin");
+//			res.setHeader("Access-Control-Allow-Origin", allowedOrigins.contains(origin) ? origin : "");
+//			res.setHeader("Vary", "Origin");
+//
+//			// Access-Control-Max-Age
+//			res.setHeader("Access-Control-Max-Age", "3600");
+//
+//			// Access-Control-Allow-Credentials
+//			res.setHeader("Access-Control-Allow-Credentials", "true");
+//
+//			// Access-Control-Allow-Methods
+//			res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+//
+//			// Access-Control-Allow-Headers
+//			res.setHeader("Access-Control-Allow-Headers",
+//					"Origin, X-Requested-With, Content-Type, Accept, " + "X-CSRF-TOKEN");
+//		}
 
 		System.out.println("tokennn===" + requestTokenHeader);
 		String username = null;
