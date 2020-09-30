@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
-import java.security.Principal;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.example.demo.config.JwtTokenUtil;
+import com.example.demo.dto.JwtRequest;
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.service.JwtUserDetailsService;
+import com.example.utils.ConstUtils;
+import com.example.utils.ResponseData;
+import com.example.utils.WapperDataResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,86 +24,76 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.config.JwtTokenUtil;
-import com.example.demo.dto.JwtRequest;
-import com.example.demo.dto.JwtResponse;
-import com.example.demo.service.JwtUserDetailsService;
-import com.example.utils.ConstUtils;
-import com.example.utils.ResponseData;
-import com.example.utils.WapperDataResponse;
+import java.security.Principal;
+import java.util.Date;
 
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+    @Autowired
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationController.class);
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private UserDetailsService userDetailService;
+    @Autowired
+    private JwtUserDetailsService jwtUserDetailsService;
+    @Value("${jwt.timetoken}")
+    private String jwt_token_validity;
 
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest rq) {
+        ResponseEntity<?> responseEntity;
+        try {
+            authenticate(rq.getUsername(), rq.getPassword());
+            final UserDetails userDetails = userDetailService.loadUserByUsername(rq.getUsername());
+            Date date = jwtUserDetailsService.getTimeToken(rq.getUsername());
+            if (date != null && date.after((new Date()))) {
+                responseEntity = WapperDataResponse.err(new ResponseData(null, "Tai khoan dang duoc dang nhap", null), HttpStatus.BAD_REQUEST);
+            } else {
+                long timeToken = new Date().getTime() + Long.parseLong(jwt_token_validity) * 1000;
+                jwtUserDetailsService.updateTimeTokenByUsername(rq.getUsername(), new Date(timeToken));
+                final String token = jwtTokenUtil.generateToken(userDetails);
+                responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, new JwtResponse(token)));
+            }
+        } catch (Exception e) {
+            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+        }
 
-	@Autowired
-	private UserDetailsService userDetailService;
+        return responseEntity;
+    }
 
-	@Autowired
-	private JwtUserDetailsService jwtUserDetailsService;
-	
-	@Autowired
-	 private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationController.class);
-
-	@Value("${jwt.timetoken}")
-	private String jwt_token_validity;
-	
-	@PostMapping("/authenticate")
-	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest rq, HttpServletRequest request) throws Exception {
-		ResponseEntity<?> responseEntity;
-		authenticate(rq.getUsername(), rq.getPassword());
-		try {
-			final UserDetails userDetails = userDetailService.loadUserByUsername(rq.getUsername());
-			Date date = jwtUserDetailsService.getTimeToken(rq.getUsername());
-			if (date != null && date.after((new Date()))) {
-				responseEntity = WapperDataResponse.err(new ResponseData(null, "Tai khoan dang duoc dang nhap", null), HttpStatus.BAD_REQUEST);
-			} else {
-				long timeToken = new Date().getTime() + Long.parseLong(jwt_token_validity) * 1000;
-				jwtUserDetailsService.updateTimeTokenByUsername(rq.getUsername(), new Date(timeToken));
-				final String token = jwtTokenUtil.generateToken(userDetails);
-				responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, new JwtResponse(token)));
-			}
-		} catch (Exception e) {
-			responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
-		}
-
-		return responseEntity;
-	} 
-
-	@PostMapping("/authenticate/signout") 
-	public ResponseEntity<?> logoutUser(Principal principal) throws Exception {
-		ResponseEntity<?> responseEntity;
-		try {
-			Date date = jwtUserDetailsService.getTimeToken(principal.getName());
-			if(date != null) {
-				jwtUserDetailsService.updateTimeTokenByUsername(principal.getName(), null);
-				responseEntity = WapperDataResponse.sucsses(new ResponseData(null,ConstUtils.SUSSCESS,null));
-			}else {
-				responseEntity = WapperDataResponse.err(new ResponseData(null,ConstUtils.ERR_BUSINESS,null), HttpStatus.BAD_REQUEST);
-			}
+    @PostMapping("/authenticate/signout")
+    public ResponseEntity<?> logoutUser(Principal principal) {
+        ResponseEntity<?> responseEntity;
+        try {
+            Date date = jwtUserDetailsService.getTimeToken(principal.getName());
+            if (date != null) {
+                jwtUserDetailsService.updateTimeTokenByUsername(principal.getName(), null);
+                responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, null));
+            } else {
+                responseEntity = WapperDataResponse.err(new ResponseData(null, ConstUtils.ERR_BUSINESS, null), HttpStatus.BAD_REQUEST);
+            }
 
 
-		} catch (Exception e) {
-			log.info("===== err ==" + e.getMessage());
-			responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
-		}
+        } catch (Exception e) {
+            log.info("===== err ==" + e.getMessage());
+            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+        }
 
-		return responseEntity;
-	}
+        return responseEntity;
+    }
 
-	private void authenticate(String username, String password) throws Exception {
-		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-		} catch (DisabledException e) {
-			throw new Exception("USER_DISABLED", e);
-		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS" + e.getMessage(), e);
-		}
-	}
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS" + e.getMessage(), e);
+        }
+    }
 }
