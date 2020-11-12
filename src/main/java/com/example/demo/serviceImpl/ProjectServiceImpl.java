@@ -22,8 +22,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO create(ProjectDTO projectDto, String createBy) {
         Project project = mapper.convertValue(projectDto, Project.class);
-        project.setCreateBy(createBy);
-        project.setCreateAt(new Date());
+        project.setCreatedBy(createBy);
+        project.setCreatedAt(new Date());
         return mapper.convertValue(projectRepository.save(project), ProjectDTO.class);
     }
 
@@ -37,9 +37,9 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findById(id);
     }
 
-    @Override
-    public Project update(Project project) {
-        return projectRepository.save(project);
-    }
+//    @Override
+//    public Project update(Project project) {
+////        return projectRepository.save(project);
+//    }
 }
 

@@ -18,7 +18,7 @@ public class UserDetails {
 
 	@Id
 	@Column
-	private Integer id;
+	private int id;
 
 	@Column
 	private String fullname;

@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.csrf().disable();
 		// dont authenticate this particular request
 		httpSecurity.authorizeRequests()
-				.antMatchers("/authenticate", "/register", "/secured/chat", "/chat/**", "/find-all","/secured/**","/secured/room").permitAll()
+				.antMatchers("/authenticate", "/register", "/secured/chat", "/chat/**", "/find-all","/secured/**","/secured/room","/project").permitAll()
 				.anyRequest().authenticated()
 				.and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

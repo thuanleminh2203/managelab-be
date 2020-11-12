@@ -31,7 +31,7 @@ public class ProjectController {
         log.info("======Start create Project =========" + rq.toString());
         ResponseEntity<?> responseEntity;
         try {
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.create(rq, principal.getName())));
+            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.create(rq, "thuanlm")));
         } catch (Exception e) {
             log.error("======Err create Project =========" + e.getMessage());
             responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
@@ -40,35 +40,35 @@ public class ProjectController {
         return responseEntity;
     }
 
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody ProjectDTO rq, Principal principal) {
-        log.info("======Start update Project =========");
-        ResponseEntity<?> responseEntity;
-        try {
-            if (rq.getId() == null) {
-                return WapperDataResponse.err(new ResponseData(null, "Id is not null", null), HttpStatus.BAD_REQUEST);
-            }
-            Optional<Project> projectOptional = projectService.findById(rq.getId());
-            if (!projectOptional.isPresent()) {
-                return WapperDataResponse.err(new ResponseData(null, "Not found data with id = " + rq.getId(), null), HttpStatus.BAD_REQUEST);
-            }
-            Project project = projectOptional.get();
-            project.setCompleted(rq.getCompleted());
-            project.setStartTime(rq.getStartTime());
-            project.setEndTime(rq.getEndTime());
-            project.setUpdateBy(principal.getName());
-            project.setUpdateAt(new Date());
-            project.setName(rq.getName());
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.update(project)));
-
-
-        } catch (Exception e) {
-            log.error("======Err update Project =========" + e.getMessage());
-            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
-        }
-        log.info("======End update Project =========");
-        return responseEntity;
-    }
+//    @PutMapping
+//    public ResponseEntity<?> update(@RequestBody ProjectDTO rq, Principal principal) {
+//        log.info("======Start update Project =========");
+//        ResponseEntity<?> responseEntity;
+//        try {
+//            if (rq.getProjectId() == null || rq.getProjectId() == 0) {
+//                return WapperDataResponse.err(new ResponseData(null, "Id is not null", null), HttpStatus.BAD_REQUEST);
+//            }
+//            Optional<Project> projectOptional = projectService.findById(rq.getProjectId());
+//            if (!projectOptional.isPresent()) {
+//                return WapperDataResponse.err(new ResponseData(null, "Not found data with id = " + rq.getProjectId(), null), HttpStatus.BAD_REQUEST);
+//            }
+//            Project project = projectOptional.get();
+////            project.setCompleted(rq.getCompleted());
+////            project.setStartTime(rq.getStartTime());
+////            project.setEndTime(rq.getEndTime());
+//            project.setUpdatedBy(principal.getName());
+//            project.setUpdatedAt(new Date());
+//            project.setProjectName(rq.getProjectName());
+//            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.update(project)));
+//
+//
+//        } catch (Exception e) {
+//            log.error("======Err update Project =========" + e.getMessage());
+//            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+//        }
+//        log.info("======End update Project =========");
+//        return responseEntity;
+//    }
 
     @GetMapping
     public ResponseEntity<?> getAll() {

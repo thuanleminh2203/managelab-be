@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
@@ -35,12 +36,13 @@ public class SocketController {
 
 
     @MessageMapping("/secured/room")
-    public void sendSpecific(@Payload MessageDTO msg,Principal user, @Header("simpSessionId") String sessionId) {
-        System.out.println("/secured/user/queue/specific-user/" + sessionId);
+    public void sendSpecific(@Payload MessageDTO msg, Principal user, @Header("simpSessionId") String sessionId) {
+        System.out.println("/secured/user/queue/specific-user-user" +sessionId);
         OutputMessage out = new OutputMessage(
                 msg.getFrom(),
                 msg.getText(),
                 new SimpleDateFormat("HH:mm").format(new Date()));
-        simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user/" +sessionId, out);
+        simpMessagingTemplate.convertAndSendToUser(msg.getTo(),"/secured/user/queue/specific-user-user" +sessionId, out);
+//        simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user-user" +sessionId, out);
     }
 }

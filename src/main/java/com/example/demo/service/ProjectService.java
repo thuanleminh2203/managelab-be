@@ -13,7 +13,7 @@ public interface ProjectService {
 
      Optional<Project> findById(Integer id) throws Exception;
 
-     Project update(Project project) throws Exception;
+//     Project update(Project project) throws Exception;
 
 //    public int update(Project project) throws Exception;
 
