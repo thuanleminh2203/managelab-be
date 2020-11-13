@@ -2,7 +2,12 @@ package com.example.demo.serviceImpl;
 
 import java.util.List;
 
+import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserSearchDTO;
+import com.example.demo.entity.UserDetails;
 import com.example.demo.repository.UserRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +25,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private ObjectMapper mapper;
+
 	@Override
 	public List<UserDetailDTO> findAll() {
 		return repository.getAll();
@@ -28,5 +36,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<UserDetailDTO> getUsername(Pageable pageable) {
 		return userRepository.getUsername(pageable);
+	}
+
+	@Override
+	public List<UserSearchDTO> getByName(String name) {
+		return mapper.convertValue(repository.getByName(name), new TypeReference<>() {
+		});
+//		return repository.getByName(name);
 	}
 }
