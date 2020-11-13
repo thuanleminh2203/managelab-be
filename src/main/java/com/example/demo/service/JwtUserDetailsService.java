@@ -1,9 +1,13 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.example.demo.config.UserPrincipal;
+import com.example.demo.dto.UserDTO;
+import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.UserRoleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,56 +16,67 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dto.UserDTO;
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
-public class JwtUserDetailsService implements UserDetailsService{
-	@Autowired
-	private UserRepository userRepository;
+@Transactional(rollbackFor = Exception.class)
+public class JwtUserDetailsService implements UserDetailsService {
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder bcryptEncoder;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+    @Autowired
+    private ObjectMapper mapper;
 
-	@Autowired
-	private PasswordEncoder bcryptEncoder;
-		
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = getUserByUsername(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserByUsername(username);
 //		System.out.println("====get role====: " + getRoleById(user.getId()));
-		List<GrantedAuthority> lst = new ArrayList<>();
-		getRoleById(user.getId()).forEach(k -> lst.add(new SimpleGrantedAuthority(k)));
-		System.out.println("lst====" + lst.size());
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),lst);
-	}
-	
-	public User save(UserDTO user) throws Exception {
-		User checkUser = userRepository.findByUsername(user.getUsername());
-		if(checkUser != null) {
-			throw new Exception("Username is exists !!");
-		}
-		return userRepository.save(new User(user.getUsername(),bcryptEncoder.encode(user.getPassword())));
-	}
-	
-	public List<String> getRoleById(int id){
-		return userRepository.getRoleById(id);
-	}
-	public Date getTimeToken(String username) throws UsernameNotFoundException {
-		User user = getUserByUsername(username);
-		System.out.println("====user.getTimeToken()====" + user.getTimeToken());
-		return user.getTimeToken();
-	}
+        List<GrantedAuthority> lst = new ArrayList<>();
+        List<String> roles =  getRoleById(user.getId());
+        roles.forEach(k -> lst.add(new SimpleGrantedAuthority(k)));
+        System.out.println("lst====" + lst.size());
+        return new UserPrincipal(user.getId() ,user.getUsername(), user.getPassword(), roles,lst);
+    }
 
-	private User getUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
-		if(user == null) {
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}
-		return user;
-	}
-	
-	public void updateTimeTokenByUsername(String username , Date date) throws Exception {
-		Integer id = userRepository.updateTimeTokenByUsername(username, date);
-		if(id < 0) throw new Exception("loi j a");
-	}
+    public void save(UserDTO user) throws Exception {
+        User checkUser = userRepository.findByUsername(user.getUsername());
+        if (checkUser != null) {
+            throw new Exception("Username is exists !!");
+        }
+        User data = mapper.convertValue(user, User.class);
+        data.setCreatedAt(new Date());
+        data.setPassword(bcryptEncoder.encode(data.getPassword()));
+        User result = userRepository.save(data);
+        userRoleRepository.save(new UserRole(result.getId(), 2));
+    }
+
+    public List<String> getRoleById(int id) {
+        return userRepository.getRoleById(id);
+    }
+
+//	public Date getTimeToken(String username) throws UsernameNotFoundException {
+//		User user = getUserByUsername(username);
+//		System.out.println("====user.getTimeToken()====" + user.getTimeToken());
+//		return user.getTimeToken();
+//	}
+
+    private User getUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+        return user;
+    }
+
+//	public void updateTimeTokenByUsername(String username , Date date) throws Exception {
+//		Integer id = userRepository.updateTimeTokenByUsername(username, date);
+//		if(id < 0) throw new Exception("loi j a");
+//	}
 }	

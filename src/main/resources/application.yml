@@ -1,6 +1,6 @@
 server:
   port: 8080
-jwt.secret: javainuse
+jwt.secret: VmVuZXNhSVQhQDIwMjBTZWNyZXRrZXlTcGFBbmRHeW1KV1Q=
 #jwt.timetoken:  18000 
 jwt.timetoken:  6000
 spring:

@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.demo.dto.JwtUserInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,30 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		final String requestTokenHeader = request.getHeader("Authorization");
-//		if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
-////			HttpServletRequest rq = (HttpServletRequest) request;
-//			HttpServletResponse res = (HttpServletResponse) response;
-//
-//			// Access-Control-Allow-Origin
-//			String origin = request.getHeader("Origin");
-//			res.setHeader("Access-Control-Allow-Origin", allowedOrigins.contains(origin) ? origin : "");
-//			res.setHeader("Vary", "Origin");
-//
-//			// Access-Control-Max-Age
-//			res.setHeader("Access-Control-Max-Age", "3600");
-//
-//			// Access-Control-Allow-Credentials
-//			res.setHeader("Access-Control-Allow-Credentials", "true");
-//
-//			// Access-Control-Allow-Methods
-//			res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-//
-//			// Access-Control-Allow-Headers
-//			res.setHeader("Access-Control-Allow-Headers",
-//					"Origin, X-Requested-With, Content-Type, Accept, " + "X-CSRF-TOKEN");
-//		}
 
-		System.out.println("tokennn===" + requestTokenHeader);
 		String username = null;
 		String jwtToken = null;
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
@@ -80,6 +58,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+//			List<String> roleList = jwtTokenUtil.getUserRole(jwtToken);
+//			JwtUserInfoDTO jwtUserInfoDTO = jwtTokenUtil.getJwtUserInfo(jwtToken);
+//			UserDetails userDetails = loadUserByJWT(jwtUserInfoDTO,roleList);
+
 			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
@@ -92,6 +74,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			}
 		}
 		filterChain.doFilter(request, response);
+	}
+
+	private UserDetails loadUserByJWT(JwtUserInfoDTO jwtUserInfoDTO, List<String> roleList) {
+		return UserPrincipal.create(jwtUserInfoDTO, roleList);
 	}
 
 }

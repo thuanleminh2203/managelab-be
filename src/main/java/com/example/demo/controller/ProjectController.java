@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.UserPrincipal;
 import com.example.demo.dto.ProjectDTO;
 import com.example.demo.entity.Project;
 import com.example.demo.service.ProjectService;
@@ -11,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,6 +32,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ProjectDTO rq, Principal principal) {
         log.info("======Start create Project =========" + rq.toString());
+
         ResponseEntity<?> responseEntity;
         try {
             responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.create(rq, "thuanlm")));
@@ -73,6 +77,9 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         log.info("======Start getAll Project =========");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal =  (UserPrincipal) authentication.getPrincipal();
+        System.out.println("======" + userPrincipal);
         ResponseEntity<?> responseEntity;
         try {
             responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.getAll()));

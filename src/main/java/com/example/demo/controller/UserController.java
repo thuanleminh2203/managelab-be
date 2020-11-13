@@ -1,18 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.UserDTO;
-import com.example.demo.dto.UserDetailDTO;
 import com.example.demo.dto.UserSearchDTO;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtUserDetailsService;
 import com.example.demo.service.UserService;
 import com.example.utils.ConstUtils;
 import com.example.utils.ResponseData;
 import com.example.utils.WapperDataResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,18 +17,19 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
+@AllArgsConstructor
 public class UserController {
-    @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
-    @Autowired
-    private UserService userService;
+
+    private final JwtUserDetailsService jwtUserDetailsService;
+
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTO user) {
         ResponseEntity<?> responseEntity;
         try {
             jwtUserDetailsService.save(user);
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, user));
+            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, null));
 
         } catch (Exception e) {
             responseEntity = WapperDataResponse.err(new ResponseData(null, ConstUtils.ERR, e.getMessage()), HttpStatus.BAD_REQUEST);

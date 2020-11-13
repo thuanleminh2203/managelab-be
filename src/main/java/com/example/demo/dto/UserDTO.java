@@ -1,28 +1,25 @@
 package com.example.demo.dto;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private String username;
 	private String password;
+	private String khoa;
+	private String fullname;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
+	private Date birthday;
+	private String phoneNumber;
 
-	public String getUsername() {
-		return username;
-	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 }
