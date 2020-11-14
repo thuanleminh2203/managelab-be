@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.AuthInfo;
 import com.example.demo.config.UserPrincipal;
 import com.example.demo.dto.ProjectDTO;
 import com.example.demo.entity.Project;
@@ -75,10 +76,10 @@ public class ProjectController {
 //    }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@AuthInfo UserPrincipal userPrincipal) {
         log.info("======Start getAll Project =========");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal =  (UserPrincipal) authentication.getPrincipal();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserPrincipal userPrincipal =  (UserPrincipal) authentication.getPrincipal();
         System.out.println("======" + userPrincipal);
         ResponseEntity<?> responseEntity;
         try {

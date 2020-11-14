@@ -1,7 +1,9 @@
 package com.example.demo.config;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
+import com.example.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -86,6 +88,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public WebClient getWebclient() {
 		return WebClient.create();
 	}
+
+	@Bean
+	public Function<UserPrincipal,UserPrincipal> fetchUser() {
+		return (principal ->principal);
+
+	}
+
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {

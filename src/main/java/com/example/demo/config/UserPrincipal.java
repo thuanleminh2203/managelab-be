@@ -19,10 +19,8 @@ public class UserPrincipal implements UserDetails {
     @Getter
     private int id;
     @Setter
-    @Getter
     private String username;
     @Setter
-    @Getter
     private String password;
     @Setter
     @Getter

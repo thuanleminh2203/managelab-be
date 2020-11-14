@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.AuthInfo;
+import com.example.demo.config.UserPrincipal;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserSearchDTO;
 import com.example.demo.service.JwtUserDetailsService;
@@ -59,7 +61,6 @@ public class UserController {
     public ResponseEntity<?> getByName(@PathVariable String username) {
         ResponseEntity<?> responseEntity;
         try {
-
             List<UserSearchDTO> lst = userService.getByName(username);
             responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, lst));
 
