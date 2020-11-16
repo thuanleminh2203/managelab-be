@@ -37,12 +37,11 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = getUserByUsername(username);
-//		System.out.println("====get role====: " + getRoleById(user.getId()));
         List<GrantedAuthority> lst = new ArrayList<>();
         List<String> roles =  getRoleById(user.getId());
         roles.forEach(k -> lst.add(new SimpleGrantedAuthority(k)));
-        System.out.println("lst====" + lst.size());
-        return new UserPrincipal(user.getId() ,user.getUsername(), user.getPassword(), roles,lst);
+
+        return new UserPrincipal(user.getId() ,user.getUsername(), user.getPassword(), roles,lst,null, user.getFullName());
     }
 
     public void save(UserDTO user) throws Exception {

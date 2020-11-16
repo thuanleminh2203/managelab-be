@@ -3,43 +3,38 @@ package com.example.demo.controller;
 import com.example.demo.config.AuthInfo;
 import com.example.demo.config.UserPrincipal;
 import com.example.demo.dto.ProjectDTO;
-import com.example.demo.entity.Project;
 import com.example.demo.service.ProjectService;
 import com.example.utils.ConstUtils;
 import com.example.utils.ResponseData;
-import com.example.utils.WapperDataResponse;
+import com.example.utils.WrapperDataResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/project")
+@RequestMapping(ConstUtils.API + "/project")
 public class ProjectController {
     private final ProjectService projectService;
     private final ObjectMapper mapper;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ProjectDTO rq, Principal principal) {
+    public ResponseEntity<?> create(@RequestBody ProjectDTO rq, @AuthInfo UserPrincipal userPrincipal) {
         log.info("======Start create Project =========" + rq.toString());
 
         ResponseEntity<?> responseEntity;
         try {
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.create(rq, "thuanlm")));
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, projectService.create(rq, userPrincipal.getUsername())));
         } catch (Exception e) {
             log.error("======Err create Project =========" + e.getMessage());
-            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
         log.info("======End create Project =========");
         return responseEntity;
@@ -80,13 +75,13 @@ public class ProjectController {
         log.info("======Start getAll Project =========");
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        UserPrincipal userPrincipal =  (UserPrincipal) authentication.getPrincipal();
-        System.out.println("======" + userPrincipal);
+        System.out.println("======" + userPrincipal.getToken());
         ResponseEntity<?> responseEntity;
         try {
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectService.getAll()));
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, projectService.getAll()));
         } catch (Exception e) {
             log.error("======Err getAll Project =========" + e.getMessage());
-            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
         log.info("======End getAll Project =========");
         return responseEntity;
@@ -98,10 +93,10 @@ public class ProjectController {
         ResponseEntity<?> responseEntity;
         try {
             ProjectDTO projectDTO = mapper.convertValue(projectService.findById(id).get(), ProjectDTO.class);
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, projectDTO));
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, projectDTO));
         } catch (Exception e) {
             log.error("======Err getById Project =========" + e.getMessage());
-            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
         log.info("======End getById Project =========");
         return responseEntity;

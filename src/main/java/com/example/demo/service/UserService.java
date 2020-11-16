@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.dto.UserChatDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserDetailDTO;
 import com.example.demo.dto.UserSearchDTO;
@@ -10,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-	List<UserDetailDTO> findAll();
+	List<UserChatDTO> findAll(int id);
 
 	Page<UserDetailDTO> getUsername(Pageable pageable);
 

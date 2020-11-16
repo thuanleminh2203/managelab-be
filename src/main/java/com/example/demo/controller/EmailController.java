@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.EmailDTO;
 import com.example.demo.service.EmailService;
 import com.example.utils.ResponseData;
-import com.example.utils.WapperDataResponse;
+import com.example.utils.WrapperDataResponse;
 
 @RestController
 @CrossOrigin
@@ -27,9 +27,9 @@ public class EmailController {
 		ResponseEntity<?> responseEntity;
 		try {
 			emailService.sendMail(emailDTO , request);
-			responseEntity = WapperDataResponse.sucsses(new ResponseData());
+			responseEntity = WrapperDataResponse.success(new ResponseData());
 		} catch (Exception e) {
-			responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null),
+			responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null),
 					HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;

@@ -1,12 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.JwtTokenUtil;
+import com.example.demo.config.UserPrincipal;
 import com.example.demo.dto.JwtRequest;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.service.JwtUserDetailsService;
 import com.example.utils.ConstUtils;
 import com.example.utils.ResponseData;
-import com.example.utils.WapperDataResponse;
+import com.example.utils.WrapperDataResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,15 +16,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
 @AllArgsConstructor
+@RequestMapping(ConstUtils.API)
+@CrossOrigin
 public class JwtAuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,16 +32,19 @@ public class JwtAuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest rq) {
+        log.info("====Start authenticate with username: " + rq.getUsername());
         ResponseEntity<?> responseEntity;
         try {
-//            authenticate(rq.getUsername(), rq.getPassword());
+            authenticate(rq.getUsername(), rq.getPassword());
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(rq.getUsername());
             final String token = jwtTokenUtil.generateToken(userDetails);
-            responseEntity = WapperDataResponse.sucsses(new ResponseData(null, ConstUtils.SUSSCESS, new JwtResponse(token)));
+            UserPrincipal userPrincipal = (UserPrincipal) userDetails;
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, new JwtResponse(userPrincipal.getId(),token, userPrincipal.getRoleList(), userPrincipal.getUsername(), userPrincipal.getFullName())));
         } catch (Exception e) {
-            responseEntity = WapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+            log.error("====Err authenticate with username: " + rq.getUsername());
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
-
+        log.info("====End authenticate with username: " + rq.getUsername());
         return responseEntity;
     }
 
@@ -72,7 +75,7 @@ public class JwtAuthenticationController {
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS" + e.getMessage(), e);
+            throw new Exception("Sai thông tin tài khoản !!");
         }
     }
 }

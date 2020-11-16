@@ -9,15 +9,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MessageDTO implements Serializable {
-    private Integer messageId;
-    private String from;
-    private String to;
-    private String content;
+@NoArgsConstructor
+public class UserChatDTO implements Serializable {
+    private int id;
+    private String username;
+    private String fullName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
-    private Date time = new Date();
-    private Integer idSend;
-    private Integer idReceive;
+    private Date birthday;
+
 }

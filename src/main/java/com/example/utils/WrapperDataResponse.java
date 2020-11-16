@@ -3,9 +3,9 @@ package com.example.utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class WapperDataResponse {
+public class WrapperDataResponse {
 	
-	public static <T> ResponseEntity<T> sucsses(T body){
+	public static <T> ResponseEntity<T> success(T body){
 		return new ResponseEntity<T>(body, HttpStatus.OK);
 	}
 	

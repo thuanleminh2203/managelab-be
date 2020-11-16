@@ -26,7 +26,13 @@ public class UserPrincipal implements UserDetails {
     @Getter
     private List<String> roleList;
     private Collection<? extends GrantedAuthority> authorities;
+    @Getter
+    @Setter
+    private String token;
 
+    @Getter
+    @Setter
+    private String fullName;
 
     public static UserPrincipal create(JwtUserInfoDTO user, List<String> roleList) {
         List<GrantedAuthority> authorities = roleList
@@ -38,7 +44,9 @@ public class UserPrincipal implements UserDetails {
                 user.getUsername(),
                 user.getPassword(),
                 roleList,
-                authorities
+                authorities,
+                null,
+                user.getFullName()
         );
     }
 
@@ -59,21 +67,21 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

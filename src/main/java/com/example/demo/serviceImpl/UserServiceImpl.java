@@ -2,6 +2,7 @@ package com.example.demo.serviceImpl;
 
 import java.util.List;
 
+import com.example.demo.dto.UserChatDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserSearchDTO;
 import com.example.demo.entity.UserDetails;
@@ -19,29 +20,28 @@ import com.example.demo.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserDetailRepository repository;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private ObjectMapper mapper;
+    @Autowired
+    private ObjectMapper mapper;
 
-	@Override
-	public List<UserDetailDTO> findAll() {
-		return repository.getAll();
-	}
+    @Override
+    public List<UserChatDTO> findAll(int id) {
+        return mapper.convertValue(userRepository.findAll(id), new TypeReference<>() {
+        });
+    }
 
-	@Override
-	public Page<UserDetailDTO> getUsername(Pageable pageable) {
-		return userRepository.getUsername(pageable);
-	}
+    @Override
+    public Page<UserDetailDTO> getUsername(Pageable pageable) {
+        return userRepository.getUsername(pageable);
+    }
 
-	@Override
-	public List<UserSearchDTO> getByName(String name) {
-		return mapper.convertValue(repository.getByName(name), new TypeReference<>() {
-		});
+    @Override
+    public List<UserSearchDTO> getByName(String name) {
+        return mapper.convertValue(userRepository.getByName(name), new TypeReference<>() {
+        });
 //		return repository.getByName(name);
-	}
+    }
 }

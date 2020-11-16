@@ -16,7 +16,7 @@ public class UserDTO implements Serializable{
 	private String username;
 	private String password;
 	private String khoa;
-	private String fullname;
+	private String fullName;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
 	private Date birthday;
 	private String phoneNumber;

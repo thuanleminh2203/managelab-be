@@ -51,6 +51,7 @@ public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBroker
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/secured/room").setAllowedOrigins("*").withSockJS();
+//				.setAllowedOrigins("*").withSockJS();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.dto.UserDetailDTO;
 import com.example.demo.entity.User;
+import com.example.demo.entity.UserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,5 +29,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "SELECT u.username FROM user u", nativeQuery = true)
     Page<UserDetailDTO> getUsername(Pageable pageable);
+
+    @Query(value ="SELECT * from user ud where ud.full_name like ?1%", nativeQuery=true)
+    List<User> getByName(String name);
+
+    @Query(value ="SELECT * from user ud where ud.id != ?1", nativeQuery=true)
+    List<User> findAll(int id);
 
 }

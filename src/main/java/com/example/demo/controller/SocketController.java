@@ -2,24 +2,24 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MessageDTO;
 import com.example.demo.dto.MessageModel;
-import com.example.demo.dto.OutputMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.*;
+import com.example.demo.service.MessageService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-@Controller
-@CrossOrigin
+@RestController
+@Slf4j
+@AllArgsConstructor
 public class SocketController {
 
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final MessageService messageService;
 
     @MessageMapping("/user")
     @SendTo("/topic/history")
@@ -36,13 +36,14 @@ public class SocketController {
 
 
     @MessageMapping("/secured/room")
-    public void sendSpecific(@Payload MessageDTO msg, Principal user, @Header("simpSessionId") String sessionId) {
-        System.out.println("/secured/user/queue/specific-user-user" +sessionId);
-        OutputMessage out = new OutputMessage(
-                msg.getFrom(),
-                msg.getText(),
-                new SimpleDateFormat("HH:mm").format(new Date()));
-        simpMessagingTemplate.convertAndSendToUser(msg.getTo(),"/secured/user/queue/specific-user-user" +sessionId, out);
-//        simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user-user" +sessionId, out);
+    public void sendSpecific(@Payload MessageDTO msg) {
+        try {
+//            messageService.save(msg);
+            simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user" + msg.getTo(), messageService.save(msg));
+        } catch (Exception e) {
+            log.error("===Err when send mess == " + e.getMessage());
+        }
+
     }
+
 }
