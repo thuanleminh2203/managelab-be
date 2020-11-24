@@ -42,15 +42,15 @@ public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBroker
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/secured/user/queue/specific-user");
-		config.setApplicationDestinationPrefixes("/spring-security-mvc-socket");
-		config.setUserDestinationPrefix("/secured/user");
+		config.enableSimpleBroker("/topic");
+		config.setApplicationDestinationPrefixes("/app");
+//		config.setUserDestinationPrefix("/secured/user");
 
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/secured/room").setAllowedOrigins("*").withSockJS();
+		registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
 //				.setAllowedOrigins("*").withSockJS();
 	}
 

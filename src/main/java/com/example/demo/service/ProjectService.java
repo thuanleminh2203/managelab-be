@@ -13,6 +13,8 @@ public interface ProjectService {
 
      Optional<Project> findById(Integer id) throws Exception;
 
+     List<Project> getListByConditions(String collum, int value);
+
 //     Project update(Project project) throws Exception;
 
 //    public int update(Project project) throws Exception;

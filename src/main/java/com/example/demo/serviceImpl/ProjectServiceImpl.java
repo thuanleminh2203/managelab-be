@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ObjectMapper mapper;
+
 
     @Override
     public ProjectDTO create(ProjectDTO projectDto, String createBy) {
@@ -35,6 +37,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Optional<Project> findById(Integer id) {
         return projectRepository.findById(id);
+    }
+
+    @Override
+    public List<Project> getListByConditions(String collum, int value) {
+        return projectRepository.getListByConditions(collum, value);
     }
 
 //    @Override

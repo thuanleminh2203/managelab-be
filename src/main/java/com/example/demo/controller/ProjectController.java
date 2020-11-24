@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.security.Principal;
 
 @CrossOrigin
@@ -24,6 +25,7 @@ import java.security.Principal;
 public class ProjectController {
     private final ProjectService projectService;
     private final ObjectMapper mapper;
+
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ProjectDTO rq, @AuthInfo UserPrincipal userPrincipal) {
@@ -78,6 +80,7 @@ public class ProjectController {
         System.out.println("======" + userPrincipal.getToken());
         ResponseEntity<?> responseEntity;
         try {
+//            System.out.println(projectService.getListByConditions("project_id",1));
             responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, projectService.getAll()));
         } catch (Exception e) {
             log.error("======Err getAll Project =========" + e.getMessage());

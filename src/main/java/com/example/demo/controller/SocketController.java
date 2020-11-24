@@ -35,11 +35,13 @@ public class SocketController {
     }
 
 
-    @MessageMapping("/secured/room")
+    @MessageMapping("/message")
     public void sendSpecific(@Payload MessageDTO msg) {
         try {
-//            messageService.save(msg);
-            simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user" + msg.getTo(), messageService.save(msg));
+            var data = messageService.save(msg);
+            simpMessagingTemplate.convertAndSend("/topic/all/"+msg.getTo(), data);
+
+//            simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user" + msg.getTo(), messageService.save(msg));
         } catch (Exception e) {
             log.error("===Err when send mess == " + e.getMessage());
         }
