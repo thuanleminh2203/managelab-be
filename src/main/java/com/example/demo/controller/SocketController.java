@@ -39,7 +39,9 @@ public class SocketController {
     public void sendSpecific(@Payload MessageDTO msg) {
         try {
             var data = messageService.save(msg);
-            simpMessagingTemplate.convertAndSend("/topic/all/"+msg.getTo(), data);
+//            simpMessagingTemplate.convertAndSend("/topic/all/"+msg.getTo(), data);
+//            simpMessagingTemplate.convertAndSend("/topic/all/", data);
+            simpMessagingTemplate.convertAndSend("/topic/chat/" + msg.getTo(), data);
 
 //            simpMessagingTemplate.convertAndSend("/secured/user/queue/specific-user" + msg.getTo(), messageService.save(msg));
         } catch (Exception e) {
