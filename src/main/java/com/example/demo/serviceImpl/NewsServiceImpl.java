@@ -39,7 +39,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public void save(NewsRequest newsRequest) {
-        newsRepository.save(mapper.convertValue(newsRequest, NewsEntity.class));
+    public NewSearchDTO save(NewsRequest newsRequest) {
+        return mapper.convertValue(newsRepository.save(mapper.convertValue(newsRequest, NewsEntity.class)), NewSearchDTO.class);
+//        newsRepository.save(mapper.convertValue(newsRequest, NewsEntity.class));
     }
 }

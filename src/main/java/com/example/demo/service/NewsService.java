@@ -13,6 +13,6 @@ public interface NewsService {
 
     List<NewSearchDTO> getNews(int pageIndex, int pageSize);
 
-    void save(NewsRequest newsRequest);
+    NewSearchDTO save(NewsRequest newsRequest);
 
 }

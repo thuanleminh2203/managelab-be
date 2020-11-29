@@ -34,7 +34,7 @@ public class NewsController {
         try {
             var data = newsService.getNews(pageIndex, pageSize);
 
-            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS,new ListNewsSearchResponse(data.size(),data)));
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, new ListNewsSearchResponse(data.size(), data)));
         } catch (Exception e) {
             log.error("======Err getAll News =========" + e.getMessage());
             responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
@@ -52,8 +52,8 @@ public class NewsController {
             newsRequest.setUserId(userPrincipal.getId());
             newsRequest.setUsername(userPrincipal.getUsername());
             newsRequest.setFullName(userPrincipal.getFullName());
-            newsService.save(newsRequest);
-            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, null));
+            var data = newsService.save(newsRequest);
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, data));
         } catch (Exception e) {
             log.error("======Err save News =========" + e.getMessage());
             responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
