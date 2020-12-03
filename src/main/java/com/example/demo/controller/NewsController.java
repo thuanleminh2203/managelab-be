@@ -61,4 +61,21 @@ public class NewsController {
         log.info("======End save News =========>" + userPrincipal.getUsername());
         return responseEntity;
     }
+
+    @PostMapping("/news/{id}")
+    public ResponseEntity<?> likeThePost(@AuthInfo UserPrincipal userPrincipal, @PathVariable int id
+    ) {
+        log.info("======Start like New =========>" + userPrincipal.getUsername());
+        ResponseEntity<?> responseEntity;
+        try {
+//            var data =
+                    newsService.likeThePost(id, userPrincipal.getId());
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, null));
+        } catch (Exception e) {
+            log.error("======Err like New =========>" + e.getMessage());
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+        }
+        log.info("======End like New =========>" + userPrincipal.getUsername());
+        return responseEntity;
+    }
 }

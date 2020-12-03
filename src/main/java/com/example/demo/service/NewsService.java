@@ -15,4 +15,6 @@ public interface NewsService {
 
     NewSearchDTO save(NewsRequest newsRequest);
 
+    void likeThePost(int idNews, int userId);
+
 }
