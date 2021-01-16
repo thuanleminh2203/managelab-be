@@ -1,11 +1,8 @@
 package com.example.demo.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -83,10 +79,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    public WebClient getWebclient() {
-        return WebClient.create();
-    }
+//    @Bean
+//    public WebClient getWebclient() {
+//        return WebClient.create();
+//    }
 
     @Bean
     public Function<UserPrincipal, UserPrincipal> fetchUser() {
@@ -104,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // dont authenticate this particular request
         httpSecurity.authorizeRequests()
                 .antMatchers("/api/v1/authenticate", "/api/v1/user/register", "/secured/room/**","/ws/**").permitAll()
-                .antMatchers("/upload/**","*/resources/**","/upload","/files/**").permitAll()
+//                .antMatchers("/upload/**","*/resources/**","/upload","/files/**").permitAll()
                 .antMatchers("/",
                         "/favicon.ico",
                         "/**/*.png",
@@ -123,10 +119,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public Jackson2JsonObjectMapper jackson2JsonObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-        return new Jackson2JsonObjectMapper(mapper);
-    }
+//    @Bean
+//    public Jackson2JsonObjectMapper jackson2JsonObjectMapper() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+//        return new Jackson2JsonObjectMapper(mapper);
+//    }
 }

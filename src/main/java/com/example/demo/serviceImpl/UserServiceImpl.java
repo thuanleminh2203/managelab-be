@@ -60,31 +60,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateAvatar(FileDTO fileDTO, HttpServletRequest request, int id) throws IOException {
-        for (MultipartFile fileData : fileDTO.getAvatar()) {
-            String name = fileData.getOriginalFilename();
-//            String name = "avatar"+id+new Date().getTime();
-            String path = System.getProperty("user.dir");
-//			System.out.println("======" + path + "/upload" );
-            File uploadRootDir = new File(path);
-            if (!uploadRootDir.exists()) {
-                uploadRootDir.mkdirs();
-            }
-            File serverFile = null;
-
-            if (name != null && name.length() > 0) {
-                serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-                stream.write(fileData.getBytes());
-                stream.close();
-                System.out.println("===name===" + name);
-
-//                serverFile.getName();
-//                FileSystemResource file = new FileSystemResource(new File(uploadRootDir.getAbsolutePath() + File.separator + name));
-            }
-//            String pathAvatar = serverFile.getAbsolutePath();
-            updateAvatarUser(id,serverFile.getAbsolutePath());
+//        for (MultipartFile fileData : fileDTO.getAvatar()) {
+//            String name = fileData.getOriginalFilename();
+////            String name = "avatar"+id+new Date().getTime();
+//            String path = System.getProperty("user.dir");
+////			System.out.println("======" + path + "/upload" );
+//            File uploadRootDir = new File(path);
+//            if (!uploadRootDir.exists()) {
+//                uploadRootDir.mkdirs();
+//            }
+//            File serverFile = null;
+//
+//            if (name != null && name.length() > 0) {
+//                serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
+//                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+//                stream.write(fileData.getBytes());
+//                stream.close();
+//                System.out.println("===name===" + name);
+//
+////                serverFile.getName();
+////                FileSystemResource file = new FileSystemResource(new File(uploadRootDir.getAbsolutePath() + File.separator + name));
+//            }
+////            String pathAvatar = serverFile.getAbsolutePath();
+//            updateAvatarUser(id,serverFile.getAbsolutePath());
 //            System.out.println("===name===" + name);
-        }
+//        }
     }
 
     @Override
