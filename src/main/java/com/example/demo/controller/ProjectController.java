@@ -42,6 +42,22 @@ public class ProjectController {
         return responseEntity;
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> create(@PathVariable int id) {
+        log.info("======Start delete Project by Id =========" + id);
+
+        ResponseEntity<?> responseEntity;
+        try {
+            projectService.delete(id);
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, null));
+        } catch (Exception e) {
+            log.error("======Err delete Project by Id =========" + e.getMessage());
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+        }
+        log.info("======End delete Project by Id =========");
+        return responseEntity;
+    }
+
 //    @PutMapping
 //    public ResponseEntity<?> update(@RequestBody ProjectDTO rq, Principal principal) {
 //        log.info("======Start update Project =========");

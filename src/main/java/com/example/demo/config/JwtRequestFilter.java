@@ -74,7 +74,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//            UserPrincipal userPrincipal = (UserPrincipal) this.jwtUserDetailsService.loadUserByUsername(username);
+//            userPrincipal.setToken(jwtToken);
+//
+//            if (jwtTokenUtil.validateToken(jwtToken, userPrincipal)) {
+//                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+//                        userPrincipal, null, userPrincipal.getAuthorities());
+//                usernamePasswordAuthenticationToken
+//                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                // After setting the Authentication in the context, we specify
+//                // that the current user is authenticated. So it passes the Spring Security
+//                // Configurations successfully.
+//                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+//            }
+//        } else {
+//            SecurityContextHolder.clearContext();
+//        }
+        if (username != null) {
             UserPrincipal userPrincipal = (UserPrincipal) this.jwtUserDetailsService.loadUserByUsername(username);
             userPrincipal.setToken(jwtToken);
 
@@ -83,13 +100,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         userPrincipal, null, userPrincipal.getAuthorities());
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // After setting the Authentication in the context, we specify
-                // that the current user is authenticated. So it passes the Spring Security
-                // Configurations successfully.
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
-        } else {
-            SecurityContextHolder.clearContext();
         }
         filterChain.doFilter(request, response);
     }

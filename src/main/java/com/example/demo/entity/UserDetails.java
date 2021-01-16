@@ -32,7 +32,7 @@ public class UserDetails {
 	private int khoa;
 	
 	@Column(name = "birthday")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "UTC")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
 	

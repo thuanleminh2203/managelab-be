@@ -44,6 +44,11 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.getListByConditions(collum, value);
     }
 
+    @Override
+    public void delete(int id) throws Exception {
+        projectRepository.deleteById(id);
+    }
+
 //    @Override
 //    public Project update(Project project) {
 ////        return projectRepository.save(project);

@@ -2,8 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.config.AuthInfo;
 import com.example.demo.config.UserPrincipal;
+import com.example.demo.dto.AvatarRequest;
+import com.example.demo.dto.FileDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserSearchDTO;
+import com.example.demo.entity.User;
 import com.example.demo.service.JwtUserDetailsService;
 import com.example.demo.service.UserService;
 import com.example.utils.ConstUtils;
@@ -14,8 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -87,6 +97,49 @@ public class UserController {
             responseEntity = WrapperDataResponse.err(new ResponseData(null, ConstUtils.ERR, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         log.info("====End getAll user ====");
+        return responseEntity;
+    }
+
+    @GetMapping("/my-info")
+    public ResponseEntity<?> myInfo(@AuthInfo UserPrincipal principal) {
+        ResponseEntity<?> responseEntity;
+        log.info("====Start getAll user ====");
+        try {
+            Optional<User> optionalUser = userService.getInfo(principal.getId());
+            if (optionalUser.isPresent()) {
+                responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, optionalUser.get()));
+
+            } else {
+                responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.ERR_BUSINESS, null));
+            }
+        } catch (Exception e) {
+            log.error("====Err getAll user ====");
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, ConstUtils.ERR, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+        log.info("====End getAll user ====");
+        return responseEntity;
+    }
+
+    //    @PutMapping("/my-info")
+    @PutMapping("/my-info")
+    public ResponseEntity<?> updateMyInfo(@AuthInfo UserPrincipal principal, @RequestBody AvatarRequest request) throws IOException {
+        ResponseEntity<?> responseEntity;
+//        file.getAvatar().
+//        Image img = ImageIO.read;
+//        log.info("====Start update avatar ====" + img);
+        try {
+//            if(optionalUser.isPresent()){
+            userService.updateAvatarUser(principal.getId(), request.getAvatar());
+            responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.SUCCESS, null));
+
+//            }else {
+//                responseEntity = WrapperDataResponse.success(new ResponseData(null, ConstUtils.ERR_BUSINESS, null));
+//            }
+        } catch (Exception e) {
+            log.error("====Err update avatar  ====");
+            responseEntity = WrapperDataResponse.err(new ResponseData(null, ConstUtils.ERR, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+        log.info("====End update avatar  ====");
         return responseEntity;
     }
 }

@@ -53,7 +53,9 @@ public class User {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
-	
+
+	@Column(name = "avatar_url")
+	private String avatarUrl;
 //	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@Column(name = "time_token")

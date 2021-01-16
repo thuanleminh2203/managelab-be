@@ -17,5 +17,6 @@ public class UserChatDTO implements Serializable {
     private String fullName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     private Date birthday;
+    private String avatarUrl;
 
 }

@@ -36,4 +36,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value ="SELECT * from user ud where ud.id != ?1", nativeQuery=true)
     List<User> findAll(int id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE user u set u.avatar_url = :url WHERE u.id = :id", nativeQuery = true)
+    void updateAvatarUser(@Param("id") int id, @Param("url") String url);
+
+    @Query(value = "SELECT u.avatar_url From user u where u.id = ?1",nativeQuery = true)
+    String getAvatarById(int id);
 }

@@ -27,6 +27,18 @@ spring:
   servlet.multipart:
           max-file-size : 500MB
           max-request-size : 500MB
+  mvc:
+      static-path-pattern : classpath:/files/**
 
-    
-# spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  resources:
+      static-locations : classpath:/files/
+aws:
+  access:
+    key:
+      id : AKIAV65AQVKMJXFRXRNJ
+      secret : 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
+
+  region : ap-southeast-1
+  s3:
+    audio:
+       bucket : thuanlm-fin

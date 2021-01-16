@@ -15,6 +15,8 @@ public interface ProjectService {
 
      List<Project> getListByConditions(String collum, int value);
 
+     void delete(int id) throws Exception;
+
 //     Project update(Project project) throws Exception;
 
 //    public int update(Project project) throws Exception;

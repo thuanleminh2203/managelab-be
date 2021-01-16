@@ -82,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
+
     @Bean
     public WebClient getWebclient() {
         return WebClient.create();
@@ -103,6 +104,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // dont authenticate this particular request
         httpSecurity.authorizeRequests()
                 .antMatchers("/api/v1/authenticate", "/api/v1/user/register", "/secured/room/**","/ws/**").permitAll()
+                .antMatchers("/upload/**","*/resources/**","/upload","/files/**").permitAll()
+                .antMatchers("/",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
