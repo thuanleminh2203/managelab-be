@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.example.demo.service.AmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,9 @@ public class AmsServiceImpl implements AmsService {
                 .withCredentials(awsCredentialsProvider)
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket = awsS3Bucket;
-        xfer_mgr = new TransferManager(awsCredentialsProvider);
-
+//        xfer_mgr = new TransferManager(awsCredentialsProvider);
+        xfer_mgr = TransferManagerBuilder.standard()
+                .withS3Client(amazonS3).build();
 
 
     }
