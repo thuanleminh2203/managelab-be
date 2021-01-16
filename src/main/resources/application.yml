@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 jwt.secret: VmVuZXNhSVQhQDIwMjBTZWNyZXRrZXlTcGFBbmRHeW1KV1Q=
 #jwt.timetoken:  18000 
 jwt.timetoken:  6000
